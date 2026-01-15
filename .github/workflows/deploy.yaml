@@ -1,0 +1,57 @@
+name: Azkaban
+
+on:
+  push:
+    branches: ["main"]
+
+jobs:
+  detect:
+    runs-on: ubuntu-latest
+    outputs:
+      projects: ${{ steps.filter.outputs.changes }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: dorny/paths-filter@v3
+        id: filter
+        with:
+          base: ${{ github.ref }}
+          list-files: json
+          # Define projects and their triggers here
+          filters: |
+            thestral:
+              - 'docker/services/thestral/**'
+
+  deploy:
+    needs: detect
+    # Don't run if the list is empty "[]"
+    if: ${{ needs.detect.outputs.projects != '[]' }}
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        project: ${{ fromJSON(needs.detect.outputs.projects) }}
+      fail-fast: false
+      
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: scp to server
+        uses: appleboy/scp-action@v0.1.7
+        with:
+          host: ${{ secrets.HOST_AZKABAN }}
+          username: prod
+          key: ${{ secrets.PROD_AZKABAN }}
+          source: "./docker/services/${{ matrix.project }}/docker-compose.yaml"
+          target: "/opt/${{ matrix.project }}"
+          strip_components: 2
+
+      - name: compose up
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ secrets.HOST_AZKABAN }}
+          username: prod
+          key: ${{ secrets.PROD_AZKABAN }}
+          script: |
+            echo "Deploying ${{ matrix.project }}..."
+            cd /opt/${{ matrix.project }}
+            docker compose pull
+            docker compose up -d --remove-orphans
