@@ -23,7 +23,6 @@ jobs:
 
   deploy:
     needs: detect
-    # Don't run if the list is empty "[]"
     if: ${{ needs.detect.outputs.projects != '[]' }}
     runs-on: ubuntu-latest
     strategy:
@@ -33,25 +32,28 @@ jobs:
       
     steps:
       - uses: actions/checkout@v4
-      
-      - name: scp to server
-        uses: appleboy/scp-action@v0.1.7
+      - name: Connect to Tailscale
+        uses: tailscale/github-action@v2
         with:
-          host: ${{ secrets.HOST_AZKABAN }}
-          username: prod
-          key: ${{ secrets.PROD_AZKABAN }}
-          source: "./docker/services/${{ matrix.project }}/docker-compose.yaml"
-          target: "/opt/${{ matrix.project }}"
-          strip_components: 2
+          oauth-client-id: ${{ secrets.TS_OAUTH_CLIENT_ID }}
+          oauth-secret: ${{ secrets.TS_OAUTH_SECRET }}
+          tags: tag:actions-cd
 
-      - name: compose up
-        uses: appleboy/ssh-action@v1.0.3
-        with:
-          host: ${{ secrets.HOST_AZKABAN }}
-          username: prod
-          key: ${{ secrets.PROD_AZKABAN }}
-          script: |
-            echo "Deploying ${{ matrix.project }}..."
+      - name: Prepare Server Directory
+        run: |
+          ssh -o StrictHostKeyChecking=no prod@${{ secrets.TAILSCALE_IP }} "mkdir -p /opt/${{ matrix.project }}"
+
+      - name: Copy docker-compose
+        run: |
+          scp -o StrictHostKeyChecking=no \
+            ./docker/services/${{ matrix.project }}/docker-compose.yaml \
+            prod@${{ secrets.TAILSCALE_IP }}:/opt/${{ matrix.project }}/
+
+      - name: Compose Up
+        run: |
+          ssh -o StrictHostKeyChecking=no prod@${{ secrets.TAILSCALE_IP }} "
+            echo 'Deploying ${{ matrix.project }}...'
             cd /opt/${{ matrix.project }}
             docker compose pull
             docker compose up -d --remove-orphans
+          "
