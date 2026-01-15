@@ -3,6 +3,15 @@ name: Azkaban
 on:
   push:
     branches: ["main"]
+  workflow_dispatch:
+    inputs:
+      force_project:
+        description: 'Force deploy specific project'
+        required: true
+        default: 'thestral'
+        type: choice
+        options:
+        - thestral
 
 jobs:
   detect:
