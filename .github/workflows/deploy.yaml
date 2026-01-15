@@ -17,7 +17,7 @@ jobs:
   detect:
     runs-on: ubuntu-latest
     outputs:
-      projects: ${{ steps.filter.outputs.changes }}
+      projects: ${{ steps.decide.outputs.result }}
     steps:
       - uses: actions/checkout@v4
       - uses: dorny/paths-filter@v3
@@ -29,6 +29,14 @@ jobs:
           filters: |
             thestral:
               - 'docker/services/thestral/**'
+      - name: Decide Projects
+        id: decide
+        run: |
+          if [ "${{ github.event_name }}" == "workflow_dispatch" ]; then
+            echo "result=[\"${{ inputs.force_project }}\"]" >> $GITHUB_OUTPUT
+          else
+            echo "result=${{ steps.filter.outputs.changes }}" >> $GITHUB_OUTPUT
+          fi
 
   deploy:
     needs: detect
@@ -46,7 +54,7 @@ jobs:
         with:
           oauth-client-id: ${{ secrets.TS_OAUTH_CLIENT_ID }}
           oauth-secret: ${{ secrets.TS_OAUTH_SECRET }}
-          tags: tag:actions-cd
+          tags: tag:ci
 
       - name: Prepare Server Directory
         run: |
