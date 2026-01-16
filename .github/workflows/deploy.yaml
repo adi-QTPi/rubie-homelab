@@ -54,7 +54,7 @@ jobs:
         with:
           oauth-client-id: ${{ secrets.TS_OAUTH_CLIENT_ID }}
           oauth-secret: ${{ secrets.TS_OAUTH_SECRET }}
-          tags: tag:ci
+          tags: tag:cd
 
       - name: Prepare Server Directory
         run: |
@@ -69,8 +69,8 @@ jobs:
       - name: Compose Up
         run: |
           ssh -o StrictHostKeyChecking=no prod@${{ secrets.TAILSCALE_IP }} "
-            echo 'Deploying ${{ matrix.project }}...'
             cd /opt/${{ matrix.project }}
             docker compose pull
             docker compose up -d --remove-orphans
+            docker image prune -f
           "
