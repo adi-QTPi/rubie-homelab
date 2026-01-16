@@ -35,9 +35,9 @@ jobs:
         id: decide
         run: |
           if [ "${{ github.event_name }}" == "workflow_dispatch" ]; then
-            echo "result=[\"${{ inputs.force_project }}\"]" >> $GITHUB_OUTPUT
+            echo 'result=["${{ inputs.force_project }}"]' >> $GITHUB_OUTPUT
           else
-            echo "result=${{ steps.filter.outputs.changes }}" >> $GITHUB_OUTPUT
+            echo 'result=${{ steps.filter.outputs.changes }}' >> $GITHUB_OUTPUT
           fi
 
   deploy:
