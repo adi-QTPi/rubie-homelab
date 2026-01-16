@@ -29,6 +29,8 @@ jobs:
           filters: |
             thestral:
               - 'docker/services/thestral/**'
+            portfolio:
+              - 'docker/services/portfolio_march/**'
       - name: Decide Projects
         id: decide
         run: |
