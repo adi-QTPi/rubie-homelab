@@ -12,6 +12,7 @@ on:
         type: choice
         options:
         - thestral
+        - portfolio_march
 
 jobs:
   detect:
@@ -60,18 +61,18 @@ jobs:
 
       - name: Prepare Server Directory
         run: |
-          ssh -o StrictHostKeyChecking=no prod@${{ secrets.TAILSCALE_IP }} "mkdir -p /opt/${{ matrix.project }}"
+          ssh -o StrictHostKeyChecking=no prod@${{ secrets.TAILSCALE_IP }} "mkdir -p /opt/services/${{ matrix.project }}"
 
       - name: Copy docker-compose
         run: |
           scp -o StrictHostKeyChecking=no \
             ./docker/services/${{ matrix.project }}/docker-compose.yaml \
-            prod@${{ secrets.TAILSCALE_IP }}:/opt/${{ matrix.project }}/
+            prod@${{ secrets.TAILSCALE_IP }}:/opt/services/${{ matrix.project }}/
 
       - name: Compose Up
         run: |
           ssh -o StrictHostKeyChecking=no prod@${{ secrets.TAILSCALE_IP }} "
-            cd /opt/${{ matrix.project }}
+            cd /opt/services/${{ matrix.project }}
             docker compose pull
             docker compose up -d --remove-orphans
             docker image prune -f
