@@ -5,8 +5,14 @@ tls: false
 prefix: /
 
 users:
-  - username: your_username
+  - username: admin_username
     password: your_secure_password
     scope: /data
     modify: true
+    rules: []
+
+  - username: reader
+    password: guest_password
+    scope: /data
+    modify: false  
     rules: []
