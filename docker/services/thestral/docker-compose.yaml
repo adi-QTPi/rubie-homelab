@@ -1,6 +1,6 @@
 services:
   thestral:
-    image: adiqtpi/thestral:v7
+    image: adiqtpi/thestral:v8
     container_name: thestral-prod
     network_mode: host
     restart: unless-stopped
