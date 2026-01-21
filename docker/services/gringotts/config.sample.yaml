@@ -7,12 +7,12 @@ prefix: /
 users:
   - username: admin_username
     password: your_secure_password
-    scope: /data
+    directory: /data
     modify: true
     rules: []
 
   - username: reader
     password: guest_password
-    scope: /data
+    directory: /data
     modify: false  
     rules: []
