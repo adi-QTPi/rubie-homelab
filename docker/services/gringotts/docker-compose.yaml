@@ -1,0 +1,11 @@
+services:
+  webdav:
+    image: hacdias/webdav:v5
+    container_name: gringotts-vault
+    restart: unless-stopped
+    volumes:
+      - ./config.yaml:/etc/webdav/config.yaml
+      # mounting to external digital ocean volume
+      - /mnt/vol_azkaban_1/notes:/data
+    ports:
+      - "127.0.0.1:9876:80"

@@ -1,0 +1,12 @@
+address: 0.0.0.0
+port: 80
+auth: true
+tls: false
+prefix: /
+
+users:
+  - username: your_username
+    password: your_secure_password
+    scope: /data
+    modify: true
+    rules: []
