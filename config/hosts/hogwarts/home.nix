@@ -1,5 +1,9 @@
 { config, pkgs, ... }: {
-  imports = [ ../../modules/shell.nix ../../modules/dev.nix ../../modules/desktop.nix ];
+  imports = [ 
+    ../../modules/shell.nix 
+    ../../modules/dev.nix 
+    ../../modules/desktop.nix 
+  ];
 
   home.username = "aditya";
   home.homeDirectory = "/Users/aditya";
