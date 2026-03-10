@@ -9,7 +9,7 @@
   home.stateVersion = "24.11";
 
   programs.zsh.shellAliases = {
-    hm = "home-manager switch --flake ~/homelab#aditya@teddy";
+    hm = "home-manager switch --flake ~/nix-config/config#aditya@teddy";
   };
 
   services.gpg-agent = {
