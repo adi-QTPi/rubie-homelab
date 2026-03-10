@@ -16,6 +16,12 @@
       "curl" = "curlie";
     };
   };
+  
+  home.sessionVariables = {
+    LANG = "C.UTF-8";
+    LC_ALL = "C.UTF-8";
+  };
+
   programs.zoxide.enable = true;
   programs.fzf.enable = true;
   programs.starship = {
