@@ -2,6 +2,7 @@
   imports = [ 
     ../../modules/shell.nix 
     ../../modules/dev.nix 
+    ../../modules/connect.nix
   ];
 
   home.username = "karma";
