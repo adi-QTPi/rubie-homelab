@@ -14,16 +14,61 @@
       "top" = "btm";
       "lgit" = "lazygit";
       "curl" = "curlie";
+
+      "vi" = "nvim";
+      "vim" = "nvim";
     };
   };
   
   home.sessionVariables = {
     LANG = "C.UTF-8";
     LC_ALL = "C.UTF-8";
+    EDITOR = "nvim";
+  };
+
+  # Modern Vim Setup (Neovim)
+  programs.neovim = {
+    enable = true;
+    defaultEditor = true;
+    viAlias = true;
+    vimAlias = true;
+    
+    plugins = with pkgs.vimPlugins; [
+      nvim-treesitter.withAllGrammars
+      which-key-nvim
+      vim-colors-solarized
+    ];
+
+    extraConfig = ''
+      " Enable Solarized Dark
+      syntax enable
+      set background=dark
+      colorscheme solarized
+      
+      " Basic quality of life settings
+      set number           " Show line numbers
+      set relativenumber   " Show relative line numbers for easy jumping
+      set tabstop=2        " 2 spaces for tabs (standard for YAML/Nix)
+      set shiftwidth=2
+      set expandtab
+      set termguicolors    " Enable true color support
+
+      " Initialize the Which-Key popup menu
+      lua << EOF
+        -- Map the leader key to Space (standard modern convention)
+        vim.g.mapleader = " "
+        
+        -- Start Which-Key
+        require("which-key").setup {
+          delay = 500, -- Delay in milliseconds before the popup shows
+        }
+      EOF
+    '';
   };
 
   programs.zoxide.enable = true;
   programs.fzf.enable = true;
+  
   programs.starship = {
     enable = true;
     settings = {
@@ -39,7 +84,7 @@
         format = "[$symbol ]($style)";
         style = "bold blue";
         symbols = {
-          Macos = ""; # Apple logo
+          Macos = ""; 
           Ubuntu = "";
           Windows = "󰍲";
         };
@@ -54,12 +99,12 @@
         style = "bold red";
         conflicted = "~";
         up_to_date = "";
-        untracked = "?";   # Simple question mark
-        stashed = "≡";     # Subtle math symbol for stack
-        modified = "!";    # Exclamation for changed
-        staged = "+";      # Plus for added to index
-        renamed = "»";     # Double arrows for moved
-        deleted = "x";     # Simple x for removed
+        untracked = "?";   
+        stashed = "≡";     
+        modified = "!";    
+        staged = "+";      
+        renamed = "»";     
+        deleted = "x";     
       };
       directory = {
         format = "[󰋜 $path]($style) ";
@@ -100,6 +145,7 @@
       };
     };
   };
+
   programs.tmux = {
     enable = true;
     shortcut = "a";

@@ -8,7 +8,7 @@
     enable = true;
     settings = {
       window = {
-        opacity = 0.10;
+        opacity = 0.40;
         blur = true;   
         padding = { x = 12; y = 12; };
         decorations = "buttonless"; 
