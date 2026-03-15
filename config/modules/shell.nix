@@ -8,15 +8,16 @@ let
     lazygit
     curlie
     fzf
-    zoxide
+    neofetch
   ];
 in
 {
   home.packages = myTerminalTools;
 
-  home.sessionPath = [ 
-    "$HOME/.nix-profile/bin"
-  ];
+  programs.zoxide = {
+    enable = true;
+    enableZshIntegration = true;
+  };
 
   programs.zsh = {
     enable = true;
@@ -27,21 +28,18 @@ in
       "top" = "btm";
       "lgit" = "lazygit";
       "curl" = "curlie";
-
-      "vi" = "nvim";
-      "vim" = "nvim";
     };
   };
   
   home.sessionVariables = {
     LANG = "C.UTF-8";
     LC_ALL = "C.UTF-8";
-    EDITOR = "nvim";
+    EDITOR = "emacs";
   };
 
   programs.neovim = {
     enable = true;
-    defaultEditor = true;
+    defaultEditor = false;
     viAlias = true;
     vimAlias = true;
     
@@ -71,9 +69,6 @@ in
       EOF
     '';
   };
-
-  programs.zoxide.enable = true;
-  programs.fzf.enable = true;
   
   programs.starship = {
     enable = true;
