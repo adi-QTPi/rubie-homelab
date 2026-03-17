@@ -88,7 +88,21 @@ in
     settings = {
       add_newline = true;
       format = "[╭─ ](dimmed white)$os$directory$git_branch$git_status$fill$username$hostname$cmd_duration$time$line_break[╰─](dimmed white)$character";
-      right_format = "$battery";
+      right_format = "\${custom.charging_status}$battery"; 
+
+      custom.charging_status = {
+        description = "Check if laptop is charging via sysfs";
+        command = ''
+          if [ -f /sys/class/power_supply/ADP1/online ]; then
+            [ "$(cat /sys/class/power_supply/ADP1/online)" -eq 1 ] && echo "⚡"
+          fi
+        '';
+        when = "test -d /sys/class/power_supply/ADP1"; 
+        shell = ["sh"];
+        style = "bold yellow";
+        format = "[$output]($style) "; 
+      };
+
       fill = {
         symbol = "·";
         style = "dimmed white";
